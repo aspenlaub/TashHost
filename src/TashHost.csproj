@@ -30,6 +30,14 @@
     <Page Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="tashhost.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tashhost.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
