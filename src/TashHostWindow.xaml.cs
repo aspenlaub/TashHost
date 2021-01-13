@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Aspenlaub.Net.GitHub.CSharp.Dvin.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Components;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashHost.Core;
+using Aspenlaub.Net.GitHub.CSharp.TashHost.Helpers;
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.TashHost {
@@ -27,7 +29,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.TashHost {
         public TashHostWindow() {
             InitializeComponent();
             var container = new ContainerBuilder().UseTashHost().Build();
-            TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>());
+            TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), new LogConfiguration());
             UiSynchronizationContext = SynchronizationContext.Current;
             vProcessId = Process.GetCurrentProcess().Id;
             UpdateUiThreadLastActiveAt();
