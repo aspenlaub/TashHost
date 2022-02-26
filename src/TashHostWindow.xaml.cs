@@ -35,15 +35,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.TashHost {
             UpdateUiThreadLastActiveAt();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-            TashAccessor.ConfirmDeadWhileClosing(vProcessId);
+        private async void OnWindowClosingAsync(object sender, System.ComponentModel.CancelEventArgs e) {
+            await TashAccessor.ConfirmDeadWhileClosingAsync(vProcessId);
         }
 
         public void Dispose() {
             vDispatcherTimer?.Stop();
         }
 
-        private void CloseButton_OnClick(object sender, RoutedEventArgs e) {
+        private void OnCloseButtonClickAsync(object sender, RoutedEventArgs e) {
             Environment.Exit(0);
         }
 
@@ -61,7 +61,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.TashHost {
             }
         }
 
-        private async void LoustWindow_OnLoadedAsync(object sender, RoutedEventArgs e) {
+        private async void OnLoustWindowLoadedAsync(object sender, RoutedEventArgs e) {
             await ConnectAndMakeTashRegistrationAsync();
             CreateAndStartTimer();
         }
