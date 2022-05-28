@@ -28,10 +28,8 @@ public partial class TashHostWindow : IDisposable {
 
     public TashHostWindow() {
         InitializeComponent();
-        var container = new ContainerBuilder().UseTashHost().Build();
-        var logConfigurationFactory = container.Resolve<ILogConfigurationFactory>();
-        logConfigurationFactory.InitializeIfNecessary("TashHost", true);
-        TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), logConfigurationFactory);
+        var container = new ContainerBuilder().UseTashHost("TashHost").Build();
+        TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), container.Resolve<ILogConfigurationFactory>());
         UiSynchronizationContext = SynchronizationContext.Current;
         ProcessId = Process.GetCurrentProcess().Id;
         UpdateUiThreadLastActiveAt();

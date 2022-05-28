@@ -5,8 +5,8 @@ using Autofac;
 namespace Aspenlaub.Net.GitHub.CSharp.TashHost.Core;
 
 public static class TashHostContainerBuilder {
-    public static ContainerBuilder UseTashHost(this ContainerBuilder builder) {
-        builder.UseDvinAndPegh(new DummyCsArgumentPrompter());
+    public static ContainerBuilder UseTashHost(this ContainerBuilder builder, string applicationName) {
+        builder.UseDvinAndPegh(applicationName, new DummyCsArgumentPrompter());
         return builder;
     }
 }
