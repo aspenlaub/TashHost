@@ -39,9 +39,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -55,6 +52,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TashClient" Version="2.0.1024.1295" />
+    <PackageReference Include="TashClient" Version="2.0.1039.969" />
   </ItemGroup>
 </Project>
