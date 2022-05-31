@@ -1,17 +1,17 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using Aspenlaub.Net.GitHub.CSharp.Dvin.Interfaces;
+﻿using Aspenlaub.Net.GitHub.CSharp.Dvin.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Components;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashHost.Core;
 using Autofac;
+using System;
+using System.Diagnostics;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Aspenlaub.Net.GitHub.CSharp.TashHost;
 
@@ -29,7 +29,8 @@ public partial class TashHostWindow : IDisposable {
     public TashHostWindow() {
         InitializeComponent();
         var container = new ContainerBuilder().UseTashHost("TashHost").Build();
-        TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), container.Resolve<ILogConfiguration>());
+        TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), container.Resolve<ILogConfiguration>(),
+            container.Resolve<IMethodNamesFromStackFramesExtractor>());
         UiSynchronizationContext = SynchronizationContext.Current;
         ProcessId = Process.GetCurrentProcess().Id;
         UpdateUiThreadLastActiveAt();
