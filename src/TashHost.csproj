@@ -52,6 +52,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TashClient" Version="2.0.1169.629" />
+    <PackageReference Include="TashClient" Version="2.0.1190.544" />
   </ItemGroup>
 </Project>
