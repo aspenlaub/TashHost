@@ -7,6 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.TashHost.Core;
 using Autofac;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +22,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.TashHost;
 // ReSharper disable once UnusedMember.Global
 public partial class TashHostWindow : IDisposable {
     private ITashAccessor TashAccessor { get; }
-    private DispatcherTimer DispatcherTimer;
+    private DispatcherTimer _DispatcherTimer;
     private SynchronizationContext UiSynchronizationContext { get; }
-    private DateTime UiThreadLastActiveAt, StatusLastConfirmedAt;
-    private readonly int ProcessId;
+    private DateTime _UiThreadLastActiveAt, _StatusLastConfirmedAt;
+    private readonly int _ProcessId;
 
     public TashHostWindow() {
         InitializeComponent();
@@ -32,16 +33,16 @@ public partial class TashHostWindow : IDisposable {
         TashAccessor = new TashAccessor(container.Resolve<IDvinRepository>(), container.Resolve<ISimpleLogger>(), container.Resolve<ILogConfiguration>(),
             container.Resolve<IMethodNamesFromStackFramesExtractor>());
         UiSynchronizationContext = SynchronizationContext.Current;
-        ProcessId = Process.GetCurrentProcess().Id;
+        _ProcessId = Process.GetCurrentProcess().Id;
         UpdateUiThreadLastActiveAt();
     }
 
     private async void OnWindowClosingAsync(object sender, System.ComponentModel.CancelEventArgs e) {
-        await TashAccessor.ConfirmDeadWhileClosingAsync(ProcessId);
+        await TashAccessor.ConfirmDeadWhileClosingAsync(_ProcessId);
     }
 
     public void Dispose() {
-        DispatcherTimer?.Stop();
+        _DispatcherTimer?.Stop();
     }
 
     private void OnCloseButtonClickAsync(object sender, RoutedEventArgs e) {
@@ -68,28 +69,39 @@ public partial class TashHostWindow : IDisposable {
     }
 
     private void CreateAndStartTimer() {
-        DispatcherTimer = new DispatcherTimer();
-        DispatcherTimer.Tick += LoustWindow_TickAsync;
-        DispatcherTimer.Interval = TimeSpan.FromSeconds(7);
-        DispatcherTimer.Start();
+        _DispatcherTimer = new DispatcherTimer();
+        _DispatcherTimer.Tick += TashHostWindow_TickAsync;
+        _DispatcherTimer.Interval = TimeSpan.FromSeconds(7);
+        _DispatcherTimer.Start();
     }
 
-    private async void LoustWindow_TickAsync(object sender, EventArgs e) {
-        UiSynchronizationContext.Send(x => UpdateUiThreadLastActiveAt(), null);
-        if (StatusLastConfirmedAt == UiThreadLastActiveAt) { return; }
+    private async void TashHostWindow_TickAsync(object sender, EventArgs e) {
+        UiSynchronizationContext.Send(_ => UpdateUiThreadLastActiveAt(), null);
+        if (_StatusLastConfirmedAt == _UiThreadLastActiveAt) { return; }
 
-        var statusCode = await TashAccessor.ConfirmAliveAsync(ProcessId, UiThreadLastActiveAt, ControllableProcessStatus.Busy);
+        var statusCode = await TashAccessor.ConfirmAliveAsync(_ProcessId, _UiThreadLastActiveAt, ControllableProcessStatus.Busy);
         if (statusCode == HttpStatusCode.NoContent) {
-            StatusLastConfirmedAt = UiThreadLastActiveAt;
-            UiSynchronizationContext.Post(x => ShowLastCommunicatedTimeStamp(), null);
+            var processes = await TashAccessor.GetControllableProcessesAsync();
+            if (processes.Any(p => p.ProcessId == _ProcessId)) {
+                _StatusLastConfirmedAt = _UiThreadLastActiveAt;
+                UiSynchronizationContext.Post(_ => ShowLastCommunicatedTimeStamp(), null);
+                return;
+            }
+
+            UiSynchronizationContext.Post(_ => { TashHostNoLongerAmongTashProcesses(); }, null);
             return;
         }
 
-        UiSynchronizationContext.Post(x => { CommunicateCouldNotConfirmStatusToTashThenStop(statusCode); }, null);
+        UiSynchronizationContext.Post(_ => { CommunicateCouldNotConfirmStatusToTashThenStop(statusCode); }, null);
     }
 
     private void CommunicateCouldNotConfirmStatusToTashThenStop(HttpStatusCode statusCode) {
         var s = string.Format(Properties.Resources.CouldNotConfirmStatusToTash, statusCode.ToString());
+        MonitorBox.Text = MonitorBox.Text + "\r\n" + s;
+    }
+
+    private void TashHostNoLongerAmongTashProcesses() {
+        var s = Properties.Resources.TashHostNoLongerAmongTashProcesses;
         MonitorBox.Text = MonitorBox.Text + "\r\n" + s;
     }
 
@@ -100,11 +112,11 @@ public partial class TashHostWindow : IDisposable {
             return;
         }
 
-        UiThreadLastActiveAt = DateTime.Now;
+        _UiThreadLastActiveAt = DateTime.Now;
     }
 
     private void ShowLastCommunicatedTimeStamp() {
-        StatusConfirmedAt.Text = StatusLastConfirmedAt.Year > 2000 ? StatusLastConfirmedAt.ToLongTimeString() : "";
+        StatusConfirmedAt.Text = _StatusLastConfirmedAt.Year > 2000 ? _StatusLastConfirmedAt.ToLongTimeString() : "";
     }
 
 }

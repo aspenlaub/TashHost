@@ -129,6 +129,9 @@
   <data name="CouldNotMakeTashRegistration" xml:space="preserve">
     <value>Could not make Tash registration (error code: {0})</value>
   </data>
+  <data name="TashHostNoLongerAmongTashProcesses" xml:space="preserve">
+    <value>Tash Host is no longer among Tash's controllable processes</value>
+  </data>
   <data name="TashHostWindowTitle" xml:space="preserve">
     <value>Tash Host</value>
   </data>
