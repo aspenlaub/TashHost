@@ -67,7 +67,7 @@ if (solutionSpecialSettingsDictionary.ContainsKey("CreateAndPushPackages")) {
   createAndPushPackages = createAndPushPackagesText == "TRUE";
 }
 
-var produceReleaseCandidate = true;
+var produceReleaseCandidate = !createAndPushPackages;
 if (solutionSpecialSettingsDictionary.ContainsKey("ProduceReleaseCandidate")) {
   var produceReleaseCandidateText = solutionSpecialSettingsDictionary["ProduceReleaseCandidate"].ToUpper();
   if (produceReleaseCandidateText != "TRUE" && produceReleaseCandidateText != "FALSE") {
@@ -371,7 +371,7 @@ Task("CopyReleaseArtifacts")
         System.IO.File.ReadAllText(releaseBinHeadTipIdShaFile), new Folder(masterReleaseBinFolder.Replace('/', '\\')),
         true, createAndPushPackages, mainNugetFeedId, updaterErrorsAndInfos);
     }
-    if (produceReleaseCandidate || !createAndPushPackages) {
+    if (produceReleaseCandidate) {
       updater.UpdateFolder(new Folder(releaseBinFolder.Replace('/', '\\')), new Folder(masterReleaseCandidateBinFolder.Replace('/', '\\')), 
         FolderUpdateMethod.AssembliesEvenIfOnlySlightlyChanged, "Aspenlaub.Net.GitHub.CSharp." + solutionId, updaterErrorsAndInfos);
     }
