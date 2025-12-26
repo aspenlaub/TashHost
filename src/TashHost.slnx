@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TashHost.csproj" />
+  <Project Path="Test/TashHost.Test.csproj" />
+</Solution>
