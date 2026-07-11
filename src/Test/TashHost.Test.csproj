@@ -19,6 +19,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Seoa" Version="2.0.2528.994" />
+    <PackageReference Include="Seoa" Version="2.0.2544.531" />
   </ItemGroup>
 </Project>
