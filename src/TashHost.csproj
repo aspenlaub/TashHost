@@ -2,9 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net11.0-windows</TargetFramework>
     <RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
-    <AssetTargetFallback>net10.0</AssetTargetFallback>
+    <AssetTargetFallback>net11.0</AssetTargetFallback>
     <UseWPF>true</UseWPF>
     <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -55,6 +55,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TashClient" Version="2.0.2666.1214" />
+    <PackageReference Include="TashClient" Version="2.0.2666.1395" />
   </ItemGroup>
 </Project>
